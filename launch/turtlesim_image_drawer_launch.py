@@ -4,7 +4,7 @@ from launch.actions import ExecuteProcess
 
 def generate_launch_description():
     return LaunchDescription([
-        # Run turtlesim_node before koch_snow
+        # Run turtlesim_node before image_drawer
         ExecuteProcess(
             cmd=['ros2', 'run', 'turtlesim', 'turtlesim_node'],
             output='screen',
@@ -13,8 +13,8 @@ def generate_launch_description():
         # Start koch_snow node
         Node(
             package='ros2_course',
-            executable='koch_snow',
-            name='koch_snow',
+            executable='image_drawer',
+            name='image_drawer',
             output='screen',
         ),
     ])

@@ -19,7 +19,6 @@ class koch_snow(Node):
             self.cb_pose,
             10)
 
-    # New method for koch_snow
     def cb_pose(self, msg):
         self.pose = msg
 
@@ -170,7 +169,7 @@ class koch_snow(Node):
         self.turn(omega, angle)
         self.go_straight(speed, distance)
 
-        self.set_pen(255, 255, 255, 1, 0)
+        self.set_pen(0, 255, 0, 1, 0)
     def draw_koch(self, speed, omega, I, L):
         if I==0:
             self.go_straight(speed, L)
@@ -186,7 +185,7 @@ class koch_snow(Node):
 def main(args=None):
     rclpy.init(args=args)
     ks = koch_snow()
-    ks.set_spawnpoint(5.0,500.0,2,7)
+    ks.set_spawnpoint(5.0,500.0,6,6)
     ks.turn(500, -155)
     for k in range(3):
         ks.draw_koch(1.0,600.0,2,0.2)
