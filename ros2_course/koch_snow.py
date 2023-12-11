@@ -26,8 +26,8 @@ class koch_snow(Node):
     def set_pen(self, r, g, b, width, off):
         pen_client = self.create_client(SetPen, '/turtle1/set_pen')
         while not pen_client.wait_for_service(timeout_sec=1.0):
-            self.get_logger().info('set_pen szolgáltatás nem elérhető, várakozás...')
-            self.get_logger().info('set_pen szolgáltatás elérhető.')
+            self.get_logger().info('set_pen service not available, waiting...')
+            self.get_logger().info('set_pen service available.')
 
         req = SetPen.Request()
         req.r = r
@@ -38,13 +38,13 @@ class koch_snow(Node):
         future = pen_client.call_async(req)
         rclpy.spin_until_future_complete(self, future)
         if future.result() is not None:
-            self.get_logger().info('Toll beállítva.')
+            self.get_logger().info('Pen set.')
         else:
-            self.get_logger().error('Hiba történt a toll beállításakor.')
+            self.get_logger().error('Error setting pen.')
 
     def go_straight(self, speed, distance):
         while self.pose is None and rclpy.ok():
-            self.get_logger().info('Várakozás...')
+            self.get_logger().info('Waiting...')
             rclpy.spin_once(self)
 
         loop_rate = self.create_rate(100, self.get_clock()) # Hz
@@ -66,10 +66,8 @@ class koch_snow(Node):
         self.twist_pub.publish(vel_msg)
 
         while rclpy.ok():
-            # Calculate the current displacement from the start position
             current_displacement = math.sqrt((self.pose.x - x_start)**2 + (self.pose.y - y_start)**2)
 
-            # ellenőrzi, hogy a robot elérte vagy túllépte a távolságot
             if current_displacement >= abs(distance):
                 break
 
@@ -79,7 +77,7 @@ class koch_snow(Node):
         # Stop
         vel_msg.linear.x = 0.0
         self.twist_pub.publish(vel_msg)
-        self.get_logger().info('Megérkezett vagy túllépte a távolságot.')
+        self.get_logger().info('Reached or exceeded the distance.')
 
 
 
@@ -89,12 +87,12 @@ class koch_snow(Node):
         omega_rad = math.radians(omega)
 
         while self.pose is None and rclpy.ok():
-            self.get_logger().info('Bátskozás a kezdezi pozícióra...')
+            self.get_logger().info('Turning to initial position...')
             rclpy.spin_once(self)
 
         angle_rad = math.radians(angle)
 
-        loop_rate = self.create_rate(100, self.get_clock())  # Hz
+        loop_rate = self.create_rate(100, self.get_clock())
 
         theta_start = self.pose.theta
 
@@ -126,7 +124,7 @@ class koch_snow(Node):
 
         vel_msg.angular.z = 0.0
         self.twist_pub.publish(vel_msg)
-        self.get_logger().info('Elérte a cél pozíciót.')
+        self.get_logger().info('Reached the target position.')
 
     def koch_subfunc(self, speed, omega, I, L, P, help):
         print(P)
