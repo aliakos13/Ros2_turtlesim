@@ -16,7 +16,7 @@ class ImageDrawer(Node):
         self.subscription = self.create_subscription(
             Pose, "/turtle1/pose", self.cb_pose, 10
         )
-        self.declare_parameter('image_path', '/home/ros_user/ros2_ws/src/ros2_course/resource/color1.png')
+        self.declare_parameter('image_path', '/home/ros_user/Documents/color1.png')
 
     def cb_pose(self, msg):
         self.pose = msg
