@@ -10,7 +10,7 @@ def generate_launch_description():
             output='screen',
         ),
 
-        # Start koch_snow node
+        # Start image_drawer node
         Node(
             package='ros2_course',
             executable='image_drawer',

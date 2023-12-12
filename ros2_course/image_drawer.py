@@ -16,6 +16,7 @@ class ImageDrawer(Node):
         self.subscription = self.create_subscription(
             Pose, "/turtle1/pose", self.cb_pose, 10
         )
+        self.declare_parameter('image_path', '/home/ros_user/ros2_ws/src/ros2_course/resource/color1.png')
 
     def cb_pose(self, msg):
         self.pose = msg
@@ -39,9 +40,10 @@ class ImageDrawer(Node):
         else:
             self.get_logger().error("Error setting pen.")
 
-    def draw_image(self, image_path, scale=1.0):
-        self.get_logger().info("Getting to starting point")
+    def draw_image(self):
 
+        # Getting the image_path from parameter
+        image_path = self.get_parameter('image_path').get_parameter_value().string_value
         # Load the image
         image = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2RGB)
 
@@ -52,12 +54,16 @@ class ImageDrawer(Node):
             )
             return
         self.get_logger().info("Image loaded")
+
         height, width = image.shape[:2]
         self.get_logger().info(f'X: {height}, Y: {width}')
+
         self.set_pen(0, 0, 0, 0, 1)
+        self.get_logger().info("Getting to starting point")
         self.go_straight(1,-((width/2)*0.1))
         color = image[0, 0]
         self.set_pen(int(color[0]), int(color[1]), int(color[2]), 5, 0)
+
         left = True
 
         for y in range(1, height):
@@ -208,7 +214,7 @@ class ImageDrawer(Node):
 def main(args=None):
     rclpy.init(args=args)
     drawer = ImageDrawer()
-    drawer.draw_image("/home/ros_user/Downloads/color1.png", scale=1)
+    drawer.draw_image()
     drawer.destroy_node()
     rclpy.shutdown()
 
